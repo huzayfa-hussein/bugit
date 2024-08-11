@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Bugit</string>
+    <string name="select_an_image_or_take_a_screenshot">Select an image or take a screenshot</string>
+    <string name="bug_description_title">Add Description for the Bug</string>
+    <string name="description_placeholder">Description</string>
+    <string name="submit_label">Submit</string>
+    <string name="select_platform_to_report">Select reporting platform</string>
 </resources>
