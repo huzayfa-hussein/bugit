@@ -1,7 +1,6 @@
-package com.hu.bugit.ui.screens
+package com.hu.bugit.ui.screens.settings
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,10 +12,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.outlined.Add
-import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -24,28 +20,34 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hu.bugit.R
 import com.hu.bugit.ui.components.BugItTopBar
 import com.hu.bugit.ui.components.TitleView
 import com.hu.bugit.ui.theme.BugitTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
-    title: String = "Settings"
+    title: String = "Settings",
+    viewModel: SettingsViewModel = viewModel(),
+    onBackButtonClicked: () -> Unit = {}
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
             BugItTopBar(
                 title = title,
                 onNavigationIconClick = {
-
+                    onBackButtonClicked()
                 }
             )
         }
@@ -81,7 +83,6 @@ fun SettingsSection(
     @StringRes title: Int,
     content: @Composable () -> Unit
 ) {
-
     TitleView(title = title)
     content()
 }
@@ -106,6 +107,7 @@ fun PlatformView(
 ) {
 
     Card(
+        enabled = true,
         modifier = modifier
             .padding(vertical = 12.dp)
             .fillMaxWidth(),

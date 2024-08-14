@@ -29,6 +29,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "NOTION_BASE_URL", "https://api.notion.com/v1/")
+            buildConfigField("String", "GOOGLE_SHEET_BASE_URL", "https://sheets.googleapis.com/v4/")
+            buildConfigField("String", "IMAGE_BASE_URL", "https://image.notion.com/")
         }
     }
     compileOptions {
@@ -40,6 +43,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -75,9 +79,24 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging.interceptor)
 
+    // room
+    implementation(libs.room.runtime)
+    ksp(libs.room.compiler)
+    implementation(libs.room.ktx)
+
     // hilt
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.fragment)
     ksp(libs.hilt.compiler)
     ksp(libs.dagger.compiler)
+
+    // navigation
+    implementation(libs.navigation.compose)
+
+    // lifecycle
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+
+    // coil-compose
+    implementation(libs.coil.compose)
 }

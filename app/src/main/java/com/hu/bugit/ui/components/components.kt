@@ -22,7 +22,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.hu.bugit.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,15 +70,17 @@ fun TitleView(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .height(48.dp)
-            .background(color = MaterialTheme.colorScheme.onSurfaceVariant)
-            .padding(horizontal = 12.dp)
     ) {
         Text(
             text = stringResource(id = title),
-            color = MaterialTheme.colorScheme.surfaceVariant,
-            style = MaterialTheme.typography.titleSmall
+            style = MaterialTheme.typography.titleMedium
         )
 
     }
+}
+
+@Preview
+@Composable
+fun ComponentsPreview() {
+    TitleView(title = R.string.bug_description_title)
 }

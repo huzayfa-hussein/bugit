@@ -1,5 +1,8 @@
-package com.hu.bugit.ui.screens
+package com.hu.bugit.ui.screens.home
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,31 +21,29 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.BottomAppBarDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hu.bugit.R
 import com.hu.bugit.domain.models.BugPlatform
 import com.hu.bugit.ui.components.BugItTopBar
@@ -50,34 +51,50 @@ import com.hu.bugit.ui.theme.BugitTheme
 
 
 @Composable
-fun MainScreen(
+fun HomeScreen(
     modifier: Modifier = Modifier,
-    title: String = "Bug Screen"
+    onAddIconButtonClicked: () -> Unit = {},
+    onSettingsIconButtonClicked: () -> Unit = {},
+    onImageReceived: (Uri?) -> Unit = {},
+    viewModel: HomeViewModel = viewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val intent = (LocalContext.current as Activity).intent
+    LaunchedEffect(key1 = intent) {
+        if (Intent.ACTION_SEND == intent.action) {
+            val imageUri = intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
+            if (imageUri != null) {
+                onImageReceived(imageUri)
+//                navController.navigate("bug_form_screen?imageUri={${imageUri.toString()}}")
+            }
+        }
+    }
+
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
             BugItTopBar(
-                title = title,
+                title = stringResource(id = R.string.bug_screen_title),
                 actions = {
-                    IconButton(onClick = { /* Handle action icon click */ }) {
+                    IconButton(onClick = { onAddIconButtonClicked() }) {
                         Icon(Icons.Outlined.Add, contentDescription = "Action Icon")
                     }
-                    IconButton(onClick = { /* Handle action icon click */ }) {
+                    IconButton(onClick = { onSettingsIconButtonClicked() }) {
                         Icon(Icons.Outlined.Settings, contentDescription = "Action Icon")
                     }
                 }
             )
         }
     ) { innerPadding ->
-        MainScreenContent(paddingValues = innerPadding)
+        HomeScreenContent(paddingValues = innerPadding)
     }
 
 
 }
 
 @Composable
-fun MainScreenContent(
+fun HomeScreenContent(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues
 ) {
@@ -86,16 +103,8 @@ fun MainScreenContent(
         modifier = modifier
             .fillMaxSize()
             .padding(paddingValues)
+            .padding(16.dp)
     ) {
-        FloatingActionButton(
-            modifier = Modifier.padding(16.dp),
-            onClick = { /* do something */ },
-            containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
-            elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
-        ) {
-            Icon(Icons.Filled.Add, "Localized description")
-        }
-
         BugCard()
         BugCard()
         BugCard()
@@ -109,14 +118,15 @@ fun BugCard(
     @DrawableRes imageUrl: Int = R.drawable.ic_launcher_foreground,
 ) {
     Card(
+        onClick = { /* Handle card click */ },
         shape = RoundedCornerShape(8.dp),
         modifier = modifier
-            .padding(8.dp)
+            .padding(vertical = 16.dp)
             .fillMaxWidth()
     ) {
         Row(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.surface)
+                .fillMaxWidth()
                 .padding(8.dp)
         ) {
             Image(
@@ -198,10 +208,10 @@ fun SourceIndicator(source: BugPlatform) {
 
 @Preview
 @Composable
-fun MainScreenPreview(
+fun HomeScreenPreview(
 
 ) {
     BugitTheme {
-        MainScreen()
+        HomeScreen()
     }
 }
