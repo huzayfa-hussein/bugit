@@ -2,7 +2,7 @@ package com.hu.bugit.data.common
 
 object Constants {
 
-    const val NOTION_SECRET = "secret_DK36uBzvfpJkSxUTYb3YPtqjbz8HJsHkUuKQTsvEzrX"
+    const val NOTION_SECRET = ""
 
     const val DATABASE_NAME = "bugit_db"
     const val CONTENT_TYPE = "Content-Type"
