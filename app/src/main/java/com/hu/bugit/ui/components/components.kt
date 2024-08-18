@@ -32,11 +32,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.hu.bugit.R
 
-
+/**
+ * A customizable top app bar for the BugIt app.
+ *
+ * The top app bar displays a title, an optional navigation icon, and optional actions.
+ *
+ * @param title The title text to display in the top app bar. Defaults to "BugIt".
+ * @param onNavigationIconClick An optional callback function that is invoked when the navigation icon (typically a back arrow) is clicked. If null, the icon is not clickable.
+ * @param actions A slot for composable content to be displayed as actions on the right side of the top app bar. Defaults to an empty content.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BugItTopBar(
-    title: String = "BugIt",
+    title: String = "",
     onNavigationIconClick: (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {}
 ) {
@@ -60,7 +68,6 @@ fun BugItTopBar(
         }
 
     )
-
 }
 
 /**
@@ -85,6 +92,12 @@ fun TitleView(
     }
 }
 
+/**
+ * A customized dialog for displaying success or failure messages.
+ * @param isSuccess is a boolean value indicating whether the operation was successful or not.
+ * @param message is a string value containing the message to be displayed.
+ * @param onDismiss is a lambda function that is invoked when the dialog is dismissed.
+ */
 @Composable
 fun ResultDialog(
     modifier: Modifier = Modifier,

@@ -15,7 +15,15 @@ import com.hu.bugit.ui.screens.bugForm.BugFormScreen
 import com.hu.bugit.ui.screens.home.HomeScreen
 import com.hu.bugit.ui.screens.settings.SettingsScreen
 
-
+/**
+ * Composable function that sets up the navigation graph for the BugIt app.
+ *
+ * This function creates a `NavHost` with three screens: Home, Bug Form, and Settings.
+ * The `NavHostController` is used to navigate between these screens based on user actions.
+ *
+ * @param navController The `NavHostController` used to manage app navigation.
+ * @param startDestination The start destination for the navigation graph, defaulting to the home screen.
+ */
 @Composable
 fun BugItNavigation(
     navController: NavHostController = rememberNavController(),
@@ -66,6 +74,9 @@ fun BugItNavigation(
     }
 }
 
+/**
+ * Object holding the route constants for the BugIt app's screens.
+ */
 object BugItScreens {
 
     const val HOME_SCREEN = "home_screen"

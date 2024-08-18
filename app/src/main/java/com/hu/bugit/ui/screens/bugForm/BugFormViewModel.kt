@@ -16,15 +16,39 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * Responsible for managing the state and logic of the bug form screen.
+ *
+ * This ViewModel handles user inputs related to the bug form, such as title, description, and image.
+ * It also manages the process of submitting a bug report, including uploading an image and submitting
+ * the report to a specific platform (e.g., Notion). The state of the form is represented by the `BugFormState`
+ * and is exposed via a `StateFlow`.
+ *
+ * @property uploadImageUseCase The use case responsible for uploading the bug image.
+ * @property submitBugUseCase The use case responsible for submitting the bug report.
+ */
 @HiltViewModel
 class BugFormViewModel @Inject constructor(
     private val uploadImageUseCase: UploadImageUseCase,
     private val submitBugUseCase: SubmitBugUseCase
 ) : ViewModel() {
 
+    // The UI state of the bug form, exposed as a StateFlow for observing UI updates.
     private val _uiState = MutableStateFlow(BugFormState(isLoading = false))
     val uiState = _uiState.asStateFlow()
 
+    /**
+     * Handles different user intents related to the bug form.
+     *
+     * Depending on the type of `BugFormIntent`, this function updates the UI state accordingly.
+     * - `OnTitleChanged`: Updates the bug title in the UI state.
+     * - `OnDescriptionChanged`: Updates the bug description in the UI state.
+     * - `OnImageChanged`: Updates the selected image URI and file path in the UI state.
+     * - `Submit`: Validates the form and initiates the submission process if valid.
+     * - `OnDismissDialog`: Dismisses any visible dialog and resets dialog-related state.
+     *
+     * @param intent The intent representing a user action in the bug form.
+     */
     fun onIntent(intent: BugFormIntent) {
         when (intent) {
             is BugFormIntent.OnTitleChanged -> {
@@ -70,6 +94,13 @@ class BugFormViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Submits the bug report by first uploading the image and then submitting the bug details.
+     *
+     * This function manages the process of uploading the selected image using `uploadImageUseCase`
+     * and then submitting the bug details using `submitBugUseCase`. It updates the UI state to reflect
+     * the progress and result of the submission.
+     */
     private fun submitBug() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
@@ -118,6 +149,15 @@ class BugFormViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Updates the image URI and file path in the UI state.
+     *
+     * This function is used to set or update the image URI and corresponding file path in the
+     * `BugFormState`, allowing the user to select a different image for the bug report.
+     *
+     * @param imageUri The URI of the selected image.
+     * @param imageFilePath The file path of the selected image.
+     */
     fun updateImageUri(imageUri: Uri?, imageFilePath: String) {
         _uiState.update { it.copy(imageUri = imageUri, imageFilePath = imageFilePath) }
     }

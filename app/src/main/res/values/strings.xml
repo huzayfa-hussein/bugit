@@ -16,4 +16,6 @@
     <string name="failed">Failed</string>
     <string name="success">Success</string>
     <string name="note_only_notion_is_available_at_the_moment">Note: Only Notion is available at the moment</string>
+    <string name="select_image">Select Image</string>
+    <string name="take_screenshot">Take Screenshot</string>
 </resources>

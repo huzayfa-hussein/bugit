@@ -3,6 +3,9 @@ package com.hu.bugit.ui.screens.bugForm
 import android.net.Uri
 import java.io.Serializable
 
+/**
+ * Data class representing the state of the BugForm screen.
+ */
 data class BugFormState(
     val isLoading: Boolean = false,
     val title: String = "",

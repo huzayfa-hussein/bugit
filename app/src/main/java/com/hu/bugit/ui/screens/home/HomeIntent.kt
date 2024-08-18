@@ -1,5 +1,8 @@
 package com.hu.bugit.ui.screens.home
 
+/**
+ * Represents the possible intents that can be sent to the HomeViewModel.
+ */
 sealed interface HomeIntent {
 
     data object OnCreateBugClicked : HomeIntent

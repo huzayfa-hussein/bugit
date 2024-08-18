@@ -2,7 +2,6 @@ package com.hu.bugit.ui.screens.bugForm
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -40,9 +39,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -57,7 +54,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.hu.bugit.MainActivity
 import com.hu.bugit.R
 import com.hu.bugit.extensions.getPathFromUri
 import com.hu.bugit.extensions.saveBitmapToImageUri
@@ -66,6 +62,13 @@ import com.hu.bugit.ui.components.ResultDialog
 import com.hu.bugit.ui.components.TitleView
 import com.hu.bugit.ui.theme.BugitTheme
 
+/**
+ * Represents the bug form screen.
+ * @param modifier The modifier to be applied to the screen.
+ * @param viewModel The view model associated with the screen.
+ * @param imageUri The URI of the captured image.
+ * @param onBackButtonClicked The callback function to handle back button click.
+ */
 @Composable
 fun BugFormScreen(
     modifier: Modifier = Modifier,
@@ -90,7 +93,7 @@ fun BugFormScreen(
         }
     ) { innerPadding ->
         Box(
-            modifier = modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
             BugFormContent(
@@ -114,17 +117,26 @@ fun BugFormScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(Color.Gray.copy(alpha = 0.5f))
+                        .background(Color.Gray.copy(alpha = 0.5f)),
+                    contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(52.dp),
+                        color = MaterialTheme.colorScheme.primary
+                    )
                 }
             }
         }
 
     }
-
 }
 
+/**
+ * Represents the content of the bug form screen.
+ * @param paddingValues The padding values to be applied to the content.
+ * @param uiState The current state of the bug form.
+ * @param onIntent The callback function to handle user intents.
+ */
 @Composable
 fun BugFormContent(
     modifier: Modifier = Modifier,
@@ -179,6 +191,12 @@ fun BugFormContent(
     }
 }
 
+/**
+ * Represents a section of the bug form.
+ * @param title The title of the section.
+ * @param modifier The modifier to be applied to the section.
+ * @param content The content of the section.
+ **/
 @Composable
 fun BugFormSection(
     @StringRes title: Int,
@@ -190,6 +208,11 @@ fun BugFormSection(
 
 }
 
+/**
+ * Represents the bug capturing section.
+ * @param imageUri The URI of the captured image.
+ * @param onSelectedImageUri The callback function to handle selected image URI.
+ */
 @Composable
 fun BugCapturing(
     modifier: Modifier = Modifier,
@@ -218,7 +241,7 @@ fun BugCapturing(
                 )
             )
         }) {
-            Text(text = "Select Image")
+            Text(text = stringResource(R.string.select_image))
         }
 
         OutlinedButton(onClick = {
@@ -226,11 +249,16 @@ fun BugCapturing(
                 onSelectedImageUri(it.saveBitmapToImageUri(context))
             }
         }) {
-            Text(text = "Take Screenshot")
+            Text(text = stringResource(R.string.take_screenshot))
         }
     }
 }
 
+/**
+ * Represents the bug description input field.
+ * @param description The description of the bug.
+ * @param onDescriptionChanged The callback function to handle description changes.
+ */
 @Composable
 fun BugDescription(
     modifier: Modifier = Modifier,
@@ -261,7 +289,11 @@ fun BugDescription(
     )
 }
 
-
+/**
+ * Represents the bug title input field.
+ * @param title The title of the bug.
+ * @param onTitleChanged The callback function to handle title changes.
+ */
 @Composable
 fun BugTitle(
     modifier: Modifier = Modifier,
@@ -290,7 +322,10 @@ fun BugTitle(
     )
 }
 
-
+/**
+ * Represents the submit button.
+ * @param onSubmitClicked The callback function to handle the submit button click.
+ */
 @Composable
 fun SubmitView(
     modifier: Modifier = Modifier,
@@ -311,6 +346,10 @@ fun SubmitView(
     }
 }
 
+/**
+ * Represents the image container.
+ * @param imageUri The URI of the image.
+ */
 @Composable
 fun ImageContainer(
     modifier: Modifier = Modifier,
@@ -341,6 +380,9 @@ fun ImageContainer(
     }
 }
 
+/**
+ * Captures a screenshot of the current screen.
+ */
 fun captureScreenshot(context: Context): Bitmap? {
     val window = (context as? Activity)?.window ?: return null
     val view = window.decorView.rootView

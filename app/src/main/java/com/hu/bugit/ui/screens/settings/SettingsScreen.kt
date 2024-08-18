@@ -39,6 +39,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.hu.bugit.domain.models.BugPlatform
 import com.hu.bugit.domain.models.settings.PlatformSetting
 
+/**
+ * Represents the settings screen.
+ */
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
@@ -67,6 +70,12 @@ fun SettingsScreen(
     }
 }
 
+/**
+ * Represents the content of the settings screen.
+ * @param paddingValues The padding values to be applied to the content.
+ * @param uiState The current state of the settings screen.
+ * @param onIntent The callback function to handle user intents.
+ */
 @Composable
 fun SettingsContent(
     modifier: Modifier = Modifier,
@@ -98,16 +107,27 @@ fun SettingsContent(
     }
 }
 
+/**
+ * Represents a section of the settings screen.
+ * @param title The title of the section.
+ * @param content The content of the section.
+ */
 @Composable
 fun SettingsSection(
     modifier: Modifier = Modifier,
     @StringRes title: Int,
     content: @Composable () -> Unit
 ) {
-    TitleView(title = title, modifier = Modifier.padding(top = 16.dp))
+    TitleView(title = title, modifier = modifier.padding(top = 16.dp))
     content()
 }
 
+/**
+ * Represents a list of platform settings.
+ * @param modifier The modifier to be applied to the list.
+ * @param data The list of platform settings.
+ * @param onPlatformSelected The callback function to handle platform selection.
+ */
 @Composable
 fun PlatformList(
     modifier: Modifier = Modifier,
@@ -116,11 +136,16 @@ fun PlatformList(
 ) {
     LazyColumn {
         items(data) {
-            PlatformView(platform = it)
+            PlatformView(modifier = modifier, platform = it)
         }
     }
 }
 
+/**
+ * Represents a single platform setting.
+ * @param platform The platform setting.
+ * @param onPlatformSelected The callback function to handle platform selection.
+ */
 @Composable
 fun PlatformView(
     modifier: Modifier = Modifier,
@@ -155,7 +180,6 @@ fun PlatformView(
             }
         }
     }
-
 }
 
 
