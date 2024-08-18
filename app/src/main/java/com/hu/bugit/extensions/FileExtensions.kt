@@ -1,29 +1,15 @@
 package com.hu.bugit.extensions
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
+import android.provider.MediaStore
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-fun Bitmap.saveBitmapToImageFile(context: Context, fileName: String = "screenshot"): Uri? {
-//    return try {
-//        val imagesDir =
-//            File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "my_images")
-//        if (!imagesDir.exists()) {
-//            imagesDir.mkdirs()
-//        }
-//        val file = File(imagesDir, "${fileName}_${System.currentTimeMillis()}.png")
-//        val os = FileOutputStream(file)
-//        this.compress(Bitmap.CompressFormat.PNG, 100, os)
-//        os.flush()
-//        os.close()
-//        FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
-//    } catch (e: IOException) {
-//        e.printStackTrace()
-//        null
-//    }
+fun Bitmap.saveBitmapToImageUri(context: Context, fileName: String = "screenshot"): Uri? {
 
     val filesDir = context.cacheDir
     val imageFile = File(filesDir, "${fileName}_${System.currentTimeMillis()}.png")
@@ -40,4 +26,17 @@ fun Bitmap.saveBitmapToImageFile(context: Context, fileName: String = "screensho
         e.printStackTrace()
         null
     }
+}
+
+
+fun Uri.getPathFromUri(context: Activity?): String {
+    var path = ""
+    val projection = arrayOf(MediaStore.Images.Media.DATA, MediaStore.Images.Media.DISPLAY_NAME)
+    context?.contentResolver?.query(this, projection, null, null, null)?.use { cursor ->
+        if (cursor.moveToFirst()) {
+            val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            path = cursor.getString(columnIndex)
+        }
+    }
+    return path.ifEmpty { this.path ?: "" }
 }

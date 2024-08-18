@@ -1,6 +1,7 @@
 package com.hu.bugit.ui.screens.settings
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,20 +18,26 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.hu.bugit.R
 import com.hu.bugit.ui.components.BugItTopBar
 import com.hu.bugit.ui.components.TitleView
 import com.hu.bugit.ui.theme.BugitTheme
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.hu.bugit.domain.models.BugPlatform
+import com.hu.bugit.domain.models.settings.PlatformSetting
 
 @Composable
 fun SettingsScreen(
@@ -52,14 +59,20 @@ fun SettingsScreen(
             )
         }
     ) { innerPadding ->
-        SettingsContent(paddingValues = innerPadding)
+        SettingsContent(
+            paddingValues = innerPadding,
+            uiState = uiState,
+            onIntent = viewModel::onIntent
+        )
     }
 }
 
 @Composable
 fun SettingsContent(
     modifier: Modifier = Modifier,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    uiState: SettingsState = SettingsState(),
+    onIntent: (SettingsIntent) -> Unit = {}
 ) {
     Column(
         modifier = modifier
@@ -68,10 +81,18 @@ fun SettingsContent(
             .padding(horizontal = 16.dp)
     ) {
         SettingsSection(title = R.string.select_platform_to_report) {
+            Text(
+                text = stringResource(R.string.note_only_notion_is_available_at_the_moment),
+                color = MaterialTheme.colorScheme.primary,
+                fontSize = 14.sp,
+                modifier = Modifier.padding(top = 4.dp)
+            )
             PlatformList(
                 modifier = modifier,
-                data = listOf("Notion", "Google Sheet", "JIRA", "TRELLO")
-            )
+                data = uiState.platformList
+            ) {
+                onIntent(SettingsIntent.OnPlatformSelected(it))
+            }
         }
 
     }
@@ -83,14 +104,15 @@ fun SettingsSection(
     @StringRes title: Int,
     content: @Composable () -> Unit
 ) {
-    TitleView(title = title)
+    TitleView(title = title, modifier = Modifier.padding(top = 16.dp))
     content()
 }
 
 @Composable
 fun PlatformList(
     modifier: Modifier = Modifier,
-    data: List<String> = listOf()
+    data: List<PlatformSetting> = listOf(),
+    onPlatformSelected: (BugPlatform) -> Unit = {}
 ) {
     LazyColumn {
         items(data) {
@@ -102,18 +124,18 @@ fun PlatformList(
 @Composable
 fun PlatformView(
     modifier: Modifier = Modifier,
-    platform: String,
-    isSelected: Boolean = false
+    platform: PlatformSetting,
+    onPlatformSelected: (BugPlatform) -> Unit = {}
 ) {
 
     Card(
-        enabled = true,
+        enabled = platform.isSelected,
         modifier = modifier
             .padding(vertical = 12.dp)
             .fillMaxWidth(),
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.cardColors(),
-        onClick = {}
+        onClick = { onPlatformSelected(platform.platform) }
     ) {
         Row(
             modifier = Modifier
@@ -122,10 +144,14 @@ fun PlatformView(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = platform)
+            Text(text = platform.platform.name)
 
-            IconButton(onClick = { /* Handle action icon click */ }) {
-                Icon(Icons.Filled.Check, contentDescription = "Action Icon")
+            IconButton(onClick = { onPlatformSelected(platform.platform) }) {
+                Icon(
+                    Icons.Filled.Check,
+                    contentDescription = "Action Icon",
+                    tint = if (platform.isSelected) Color.Green else Color.Gray
+                )
             }
         }
     }

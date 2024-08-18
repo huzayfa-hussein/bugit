@@ -26,21 +26,29 @@ fun BugItNavigation(
         startDestination = startDestination
     ) {
         composable(route = HOME_SCREEN) {
-            HomeScreen(onAddIconButtonClicked = {
-                navController.navigate(route = "$BUG_FORM_SCREEN/{imageUri}")
-            },
+            HomeScreen(
+                onAddIconButtonClicked = {
+                    navController.navigate(route = "$BUG_FORM_SCREEN?${Uri.encode("")}")
+                },
                 onSettingsIconButtonClicked = {
                     navController.navigate(route = SETTINGS_SCREEN)
                 },
                 onImageReceived = {
-                    navController.navigate(route = "$BUG_FORM_SCREEN/${Uri.encode(it.toString())}")
-                })
+                    navController.navigate(route = "$BUG_FORM_SCREEN?${Uri.encode(it.toString())}")
+                },
+                navController = navController
+            )
         }
         composable(
-            route = "$BUG_FORM_SCREEN/{imageUri}",
-            arguments = listOf(navArgument("imageUri") { type = NavType.StringType })
+            route = "$BUG_FORM_SCREEN?{imageUri}",
+            arguments = listOf(navArgument("imageUri") {
+                type = NavType.StringType
+                nullable = true
+                defaultValue = null
+            })
         ) { backStackEntry ->
-            val imageUri = backStackEntry.arguments?.getString("imageUri")?.let { Uri.parse(it) }
+            val imageStringUri = backStackEntry.arguments?.getString("imageUri")
+            val imageUri = if (imageStringUri.isNullOrEmpty()) null else Uri.parse(imageStringUri)
             BugFormScreen(
                 imageUri = imageUri,
                 onBackButtonClicked = {

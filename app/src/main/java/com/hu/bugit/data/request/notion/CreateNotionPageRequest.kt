@@ -1,5 +1,7 @@
 package com.hu.bugit.data.request.notion
 
+import org.json.JSONArray
+import org.json.JSONObject
 import java.io.Serializable
 
 data class CreateNotionPageRequest(
@@ -7,3 +9,4 @@ data class CreateNotionPageRequest(
     val properties: Map<String, PropertyValue>,
     val children: List<Block>? = null
 ) : Serializable
+

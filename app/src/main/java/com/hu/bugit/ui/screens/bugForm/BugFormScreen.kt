@@ -2,9 +2,9 @@ package com.hu.bugit.ui.screens.bugForm
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import android.view.View
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -36,16 +37,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -55,25 +53,31 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.hu.bugit.R
-import com.hu.bugit.ui.components.BugItTopBar
-import com.hu.bugit.ui.components.TitleView
-import com.hu.bugit.ui.theme.BugitTheme
-import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
-import com.hu.bugit.extensions.saveBitmapToImageFile
+import com.hu.bugit.MainActivity
+import com.hu.bugit.R
+import com.hu.bugit.extensions.getPathFromUri
+import com.hu.bugit.extensions.saveBitmapToImageUri
+import com.hu.bugit.ui.components.BugItTopBar
+import com.hu.bugit.ui.components.ResultDialog
+import com.hu.bugit.ui.components.TitleView
+import com.hu.bugit.ui.theme.BugitTheme
 
 @Composable
 fun BugFormScreen(
     modifier: Modifier = Modifier,
-    viewModel: BugFormViewModel = viewModel(),
+    viewModel: BugFormViewModel = hiltViewModel(),
     imageUri: Uri? = null,
     onBackButtonClicked: () -> Unit = {}
 ) {
+    val activity = LocalContext.current as? Activity
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    viewModel.updateImageUri(imageUri)
+    LaunchedEffect(imageUri) {
+        viewModel.updateImageUri(imageUri, imageUri?.getPathFromUri(activity) ?: "")
+    }
     Scaffold(
         modifier = modifier.fillMaxSize(),
         topBar = {
@@ -85,12 +89,38 @@ fun BugFormScreen(
             )
         }
     ) { innerPadding ->
-        BugFormContent(
-            modifier = modifier,
-            paddingValues = innerPadding,
-            uiState = uiState,
-            onIntent = viewModel::onIntent
-        )
+        Box(
+            modifier = modifier.fillMaxWidth(),
+            contentAlignment = Alignment.Center
+        ) {
+            BugFormContent(
+                modifier = modifier,
+                paddingValues = innerPadding,
+                uiState = uiState,
+                onIntent = { intent ->
+                    when (intent) {
+                        is BugFormIntent.OnDismissDialog -> {
+                            if (intent.success) {
+                                onBackButtonClicked()
+                            }
+                        }
+
+                        else -> Unit
+                    }
+                    viewModel.onIntent(intent)
+                }
+            )
+            if (uiState.isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Gray.copy(alpha = 0.5f))
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+        }
+
     }
 
 }
@@ -102,6 +132,15 @@ fun BugFormContent(
     uiState: BugFormState = BugFormState(),
     onIntent: (BugFormIntent) -> Unit = {}
 ) {
+    val activity = LocalContext.current as? Activity
+    if (uiState.showDialog) {
+        ResultDialog(
+            message = uiState.dialogMessage,
+            isSuccess = uiState.isSubmitted
+        ) {
+            onIntent(BugFormIntent.OnDismissDialog(uiState.isSubmitted))
+        }
+    }
     Column(
         modifier = modifier
             .padding(paddingValues)
@@ -128,7 +167,7 @@ fun BugFormContent(
             title = R.string.select_an_image_or_take_a_screenshot
         ) {
             BugCapturing(modifier = modifier, imageUri = uiState.imageUri) {
-                onIntent(BugFormIntent.OnImageChanged(it))
+                onIntent(BugFormIntent.OnImageChanged(it, it?.getPathFromUri(activity) ?: ""))
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
@@ -184,9 +223,7 @@ fun BugCapturing(
 
         OutlinedButton(onClick = {
             captureScreenshot(context)?.let {
-                it.saveBitmapToImageFile(context).let { uri ->
-                    onSelectedImageUri(uri)
-                }
+                onSelectedImageUri(it.saveBitmapToImageUri(context))
             }
         }) {
             Text(text = "Take Screenshot")
@@ -211,7 +248,6 @@ fun BugDescription(
             Text(text = stringResource(id = R.string.description_placeholder))
         },
         textStyle = TextStyle(
-            color = MaterialTheme.colorScheme.primary,
             fontSize = 16.sp,
             fontFamily = FontFamily.Monospace,
             fontWeight = FontWeight.Normal
@@ -288,18 +324,19 @@ fun ImageContainer(
             .border(
                 BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
                 RoundedCornerShape(16.dp)
-            )
+            ),
+        contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = rememberAsyncImagePainter(
+            painter = if (imageUri == null) painterResource(id = R.drawable.ic_image_place_holder) else rememberAsyncImagePainter(
                 model = ImageRequest.Builder(LocalContext.current).data(imageUri)
                     .allowHardware(false).build(),
-                placeholder = painterResource(id = R.drawable.ic_launcher_foreground)
+                placeholder = painterResource(id = R.drawable.ic_image_place_holder)
             ),
             contentDescription = "",
             modifier = Modifier
-                .clip(RoundedCornerShape(16.dp))
-                .size(200.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .size(150.dp)
         )
     }
 }
@@ -318,6 +355,6 @@ fun captureScreenshot(context: Context): Bitmap? {
 @Composable
 fun BugFormPreview() {
     BugitTheme {
-        BugFormScreen()
+        ImageContainer()
     }
 }

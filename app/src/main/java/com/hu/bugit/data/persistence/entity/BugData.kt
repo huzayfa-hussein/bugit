@@ -8,11 +8,11 @@ import java.io.Serializable
 @Entity(tableName = "bugs")
 data class BugData(
     @PrimaryKey(autoGenerate = true)
-    val id: Long,
+    val id: Long = 0L,
     val title: String,
     val description: String,
     val imageUrl: String,
     val platform: BugPlatform,
     val createdAt: String,
-    val updatedAt: String
+    val url: String
 ) : Serializable

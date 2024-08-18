@@ -5,6 +5,8 @@ import androidx.room.Room
 import com.hu.bugit.data.common.Constants.DATABASE_NAME
 import com.hu.bugit.data.persistence.AppDatabase
 import com.hu.bugit.data.persistence.BugDao
+import com.hu.bugit.data.repository.HomeRepositoryImpl
+import com.hu.bugit.domain.repository.home.HomeRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,5 +39,13 @@ object DatabaseModule {
     @Provides
     fun provideBugDao(appDatabase: AppDatabase): BugDao {
         return appDatabase.bugDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideHomeRepository(
+        bugDao: BugDao
+    ): HomeRepository {
+        return HomeRepositoryImpl(bugDao)
     }
 }

@@ -1,7 +1,5 @@
 package com.hu.bugit
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -18,7 +16,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val imageUri = handleReceivedImage(intent)
         setContent {
             BugitTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { _ ->
@@ -26,12 +23,5 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-
-    private fun handleReceivedImage(intent: Intent?): Uri? {
-        if (intent?.action == Intent.ACTION_SEND) {
-            return intent.getParcelableExtra(Intent.EXTRA_STREAM)
-        }
-        return null
     }
 }

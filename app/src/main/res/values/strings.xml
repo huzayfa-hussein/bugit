@@ -9,4 +9,11 @@
     <string name="bug_title">Bug Title</string>
     <string name="bug_screen_title">Bug Screen</string>
     <string name="bug_form_title">Create New Bug</string>
+    <string name="empty_bug_list_text">Ooops, You have no bugs!</string>
+    <string name="report_your_first_bug">Report your first one.</string>
+    <string name="okay">OK</string>
+    <string name="try_again">Try Again</string>
+    <string name="failed">Failed</string>
+    <string name="success">Success</string>
+    <string name="note_only_notion_is_available_at_the_moment">Note: Only Notion is available at the moment</string>
 </resources>

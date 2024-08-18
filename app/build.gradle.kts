@@ -1,9 +1,16 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.plugin)
 }
+
+val keyPropertiesFile = rootProject.file("keys.properties")
+val keyProperties = Properties()
+keyProperties.load(FileInputStream(keyPropertiesFile))
 
 android {
     namespace = "com.hu.bugit"
@@ -20,6 +27,14 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+        buildConfigField(
+            "String", "NOTION_SECRET_KEY",
+            keyProperties["NOTION_SECRET_KEY"].toString()
+        )
+        buildConfigField(
+            "String", "IMGUR_CLIENT_ID",
+            keyProperties["IMGUR_CLIENT_ID"].toString()
+        )
     }
 
     buildTypes {
@@ -29,9 +44,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "NOTION_BASE_URL", "https://api.notion.com/v1/")
-            buildConfigField("String", "GOOGLE_SHEET_BASE_URL", "https://sheets.googleapis.com/v4/")
-            buildConfigField("String", "IMAGE_BASE_URL", "https://image.notion.com/")
         }
     }
     compileOptions {
@@ -86,7 +98,7 @@ dependencies {
 
     // hilt
     implementation(libs.hilt.android)
-    implementation(libs.hilt.navigation.fragment)
+    implementation(libs.hilt.navigation.compose)
     ksp(libs.hilt.compiler)
     ksp(libs.dagger.compiler)
 

@@ -9,5 +9,9 @@ data class BugFormState(
     val description: String = "",
     val imageUrl: String = "",
     val imageUri: Uri? = null,
-    val isSubmitted: Boolean = false
+    val imageFilePath: String = "",
+    val isSubmitted: Boolean = false,
+    val error: String = "",
+    val showDialog: Boolean = false,
+    val dialogMessage: String = ""
 ) : Serializable

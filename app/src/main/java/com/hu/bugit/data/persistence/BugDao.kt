@@ -12,7 +12,7 @@ interface BugDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNewBug(bugData: BugData): Long
 
-    @Query("select * from bugs order by createdAt ASC")
+    @Query("select * from bugs order by id")
     suspend fun getAllBugs(): List<BugData>
 
 }
