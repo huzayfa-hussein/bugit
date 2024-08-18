@@ -15,6 +15,9 @@ import dagger.hilt.components.SingletonComponent
 import java.util.concurrent.Executors
 import javax.inject.Singleton
 
+/**
+ * A module for providing database and dao instances.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object DatabaseModule {

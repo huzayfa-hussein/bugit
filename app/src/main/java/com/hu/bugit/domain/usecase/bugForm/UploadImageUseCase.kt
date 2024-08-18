@@ -7,6 +7,9 @@ import com.hu.bugit.domain.usecase.base.UseCase
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+/**
+ * Represents a use case for uploading an image.
+ */
 class UploadImageUseCase @Inject constructor(
     private val imageRepository: ImageRepository
 ) : UseCase<DomainBaseModel<String>>() {
@@ -15,6 +18,10 @@ class UploadImageUseCase @Inject constructor(
         return "UploadImageUseCase"
     }
 
+    /**
+     * Executes the use case to upload an image.
+     * @param imagePath The path of the image to be uploaded.
+     */
     operator fun invoke(
         imagePath: String
     ): Flow<Resource<DomainBaseModel<String>>> = executeFlow {

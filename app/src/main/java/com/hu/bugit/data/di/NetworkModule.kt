@@ -26,6 +26,9 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
 
+/**
+ * Dagger Hilt module for providing network-related dependencies.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
@@ -62,8 +65,8 @@ object NetworkModule {
             this.connectTimeout(60, TimeUnit.SECONDS)
             // Set read timeout to 60 seconds
             this.readTimeout(60, TimeUnit.SECONDS)
-            // Add HTTP logging interceptor for logging requests and responses
             this.addInterceptor(serviceHeadersInterceptor)
+            // Add HTTP logging interceptor for logging requests and responses
             this.addInterceptor(httpLoggingInterceptor)
         }.build() // Build the OkHttpClient instance
     }

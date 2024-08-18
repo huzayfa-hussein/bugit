@@ -8,6 +8,10 @@ import com.hu.bugit.domain.usecase.base.UseCase
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
+/**
+ * Represents a use case for fetching a list of bugs.
+ *@property homeRepository The repository responsible for handling home-related operations.
+ */
 class BugListUseCase @Inject constructor(
     private val homeRepository: HomeRepository
 ) : UseCase<DomainBaseModel<List<BugModel>>>() {
@@ -16,6 +20,9 @@ class BugListUseCase @Inject constructor(
         return "BugListUseCase"
     }
 
+    /**
+     * Executes the use case to fetch a list of bugs.
+     */
     operator fun invoke(): Flow<Resource<DomainBaseModel<List<BugModel>>>> = executeFlow {
         it.emit(Resource.Loading())
         val result = homeRepository.fetchBugList()

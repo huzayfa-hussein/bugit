@@ -1,5 +1,6 @@
 package com.hu.bugit.data.repository
 
+import com.hu.bugit.BuildConfig
 import com.hu.bugit.data.dto.CreateNotionPageDto
 import com.hu.bugit.data.persistence.BugDao
 import com.hu.bugit.data.persistence.entity.BugData
@@ -18,6 +19,12 @@ import org.json.JSONObject
 import java.util.Date
 import javax.inject.Inject
 
+/**
+ * Represents a repository for handling bug form-related operations.
+ * @property notionApiService The Notion API service for making network requests.
+ * @property apiHandler The API handler for handling network responses.
+ * @property bugDao The DAO for accessing and manipulating bug data in the database.
+ */
 class BugFormRepositoryImpl @Inject constructor(
     private val notionApiService: NotionApiService,
     private val apiHandler: ApiHandler,
@@ -40,8 +47,7 @@ class BugFormRepositoryImpl @Inject constructor(
             title = title,
             description = description,
             imageUrl = imageUrl,
-            formattedDate = Date().convertToDateString(format = DATE_ISO_8601),
-            databaseId = "9e07fc07be8848b184d8caa8935360f6"
+            formattedDate = Date().convertToDateString(format = DATE_ISO_8601)
         )
         val requestBody = RequestBody.create(
             "application/json".toMediaTypeOrNull(),
@@ -74,12 +80,18 @@ class BugFormRepositoryImpl @Inject constructor(
 
     }
 
+    /**
+     * Creates a JSON request body for creating a new page in Notion.
+     * @param title The title of the bug.
+     * @param description The description of the bug.
+     * @param imageUrl The URL of the image associated with the bug.
+     * @param formattedDate The formatted date of creation.
+     */
     private fun createNotionPageRequest(
         title: String,
         description: String,
         imageUrl: String,
-        formattedDate: String,
-        databaseId: String
+        formattedDate: String
     ): String {
         val properties = JSONObject().apply {
             put("Name", JSONObject().apply {
@@ -101,15 +113,6 @@ class BugFormRepositoryImpl @Inject constructor(
                     })
                 })
             })
-//            put("Summary", JSONObject().apply {
-//                put("rich_text", JSONArray().apply {
-//                    put(JSONObject().apply {
-//                        put("text", JSONObject().apply {
-//                            put("content", description)
-//                        })
-//                    })
-//                })
-//            })
             put("ImageURL", JSONObject().apply {
                 put("url", imageUrl)
             })
@@ -122,7 +125,7 @@ class BugFormRepositoryImpl @Inject constructor(
 
         return JSONObject().apply {
             put("parent", JSONObject().apply {
-                put("database_id", "9e07fc07be8848b184d8caa8935360f6")
+                put("database_id", BuildConfig.NOTION_DATABASE_ID)
             })
             put("properties", properties)
         }.toString()

@@ -32,6 +32,10 @@ android {
             keyProperties["NOTION_SECRET_KEY"].toString()
         )
         buildConfigField(
+            "String", "NOTION_DATABASE_ID",
+            keyProperties["NOTION_DATABASE_ID"].toString()
+        )
+        buildConfigField(
             "String", "IMGUR_CLIENT_ID",
             keyProperties["IMGUR_CLIENT_ID"].toString()
         )

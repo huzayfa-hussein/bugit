@@ -31,13 +31,13 @@ class SubmitBugUseCase @Inject constructor(
         platform: BugPlatform
     ): Flow<Resource<DomainBaseModel<NotionPageModel>>> = executeFlow {
         it.emit(Resource.Loading())
-//        val result = bugFormRepository.createBug(
-//            title, description, imageUrl, platform
-//        )
-//        if (result.isSuccessful) {
-//            it.emit(Resource.Success(result))
-//        } else {
-//            it.emit(Resource.Error(result.message ?: ""))
-//        }
+        val result = bugFormRepository.createBug(
+            title, description, imageUrl, platform
+        )
+        if (result.isSuccessful) {
+            it.emit(Resource.Success(result))
+        } else {
+            it.emit(Resource.Error(result.message ?: ""))
+        }
     }
 }

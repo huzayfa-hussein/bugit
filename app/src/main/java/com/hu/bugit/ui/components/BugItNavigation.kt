@@ -43,8 +43,7 @@ fun BugItNavigation(
                 },
                 onImageReceived = {
                     navController.navigate(route = "$BUG_FORM_SCREEN?${Uri.encode(it.toString())}")
-                },
-                navController = navController
+                }
             )
         }
         composable(

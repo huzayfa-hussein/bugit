@@ -9,6 +9,9 @@ import com.hu.bugit.data.common.Constants.NOTION_VERSION
 import okhttp3.Interceptor
 import okhttp3.Response
 
+/**
+ * Represents an interceptor for adding headers to network requests.
+ */
 class ServiceHeadersInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val request = chain.request()

@@ -50,8 +50,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import coil.compose.rememberAsyncImagePainter
 import com.hu.bugit.R
 import com.hu.bugit.domain.models.BugPlatform
@@ -60,15 +58,16 @@ import com.hu.bugit.extensions.openBrowser
 import com.hu.bugit.ui.components.BugItTopBar
 import com.hu.bugit.ui.theme.BugitTheme
 
-
+/**
+ * Represents the Home screen of the application.
+ */
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
     onAddIconButtonClicked: () -> Unit = {},
     onSettingsIconButtonClicked: () -> Unit = {},
     onImageReceived: (Uri?) -> Unit = {},
-    viewModel: HomeViewModel = hiltViewModel(),
-    navController: NavController
+    viewModel: HomeViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val activity = LocalContext.current as Activity
@@ -104,7 +103,6 @@ fun HomeScreen(
     ) { innerPadding ->
         HomeScreenContent(
             paddingValues = innerPadding,
-            navController = navController,
             uiState = uiState,
             onIntent = { intent ->
                 when (intent) {
@@ -126,11 +124,17 @@ fun HomeScreen(
 
 }
 
+/**
+ * Composable function that represents the content of the Home screen.
+ * @param modifier The modifier to be applied to the content.
+ * @param paddingValues The padding values to be applied to the content.
+ * @param uiState The current UI state of the Home screen.
+ * @param onIntent The callback function to handle user intents.
+ */
 @Composable
 fun HomeScreenContent(
     modifier: Modifier = Modifier,
     paddingValues: PaddingValues,
-    navController: NavController,
     uiState: HomeState = HomeState(),
     onIntent: (HomeIntent) -> Unit = {}
 ) {
@@ -155,6 +159,12 @@ fun HomeScreenContent(
     }
 }
 
+/**
+ * Composable function that displays a list of bug cards.
+ * @param modifier The modifier to be applied to the list.
+ * @param bugList The list of bug models to be displayed.
+ * @param onBugClicked The callback function to handle bug card clicks.
+ */
 @Composable
 fun BugCardList(
     modifier: Modifier = Modifier,
@@ -172,6 +182,12 @@ fun BugCardList(
     }
 }
 
+/**
+ * Composable function that displays a bug card.
+ * @param modifier The modifier to be applied to the card.
+ * @param bugModel The bug model to be displayed.
+ * @param onBugClicked The callback function to handle bug card clicks.
+ */
 @Composable
 fun BugCard(
     modifier: Modifier = Modifier,
@@ -247,6 +263,11 @@ fun BugCard(
     }
 }
 
+/**
+ * Composable function that displays a new bug view.
+ * @param modifier The modifier to be applied to the view.
+ * @param onAddNewBugClicked The callback function to handle the click event on the "Add New Bug" button.
+ */
 @Composable
 fun NewBugView(
     modifier: Modifier = Modifier,
@@ -275,6 +296,10 @@ fun NewBugView(
     }
 }
 
+/**
+ * Composable function that displays a source indicator for a bug.
+ * @param source The source of the bug.
+ */
 @Composable
 fun SourceIndicator(source: BugPlatform) {
     val sourceText = when (source) {

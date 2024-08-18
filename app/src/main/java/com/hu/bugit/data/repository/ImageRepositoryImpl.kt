@@ -11,12 +11,20 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import javax.inject.Inject
 
+/**
+ * Represents an implementation of the [ImageRepository] interface.
+ * @property imageApiService The API service for image-related operations.
+ * @property apiHandler The API handler for handling API calls.
+ */
 class ImageRepositoryImpl @Inject constructor(
     private val imageApiService: ImageApiService,
     private val apiHandler: ApiHandler
 ) : ImageRepository {
 
-
+    /**
+     * Uploads an image to the server and returns the URL of the uploaded image.
+     * @param imagePath The file path of the image to be uploaded.
+     */
     override suspend fun uploadImage(imagePath: String): DomainBaseModel<String> {
         val file = File(imagePath)
         val requestFile = file.asRequestBody("image/*".toMediaTypeOrNull())

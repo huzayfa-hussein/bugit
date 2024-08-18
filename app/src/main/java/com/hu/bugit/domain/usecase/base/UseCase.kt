@@ -6,6 +6,9 @@ import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.flow
 import java.io.IOException
 
+/**
+ * Base class for use cases in the application.
+ */
 abstract class UseCase<T> {
 
     open fun tagName(): String = "name the useCase to specify the error"

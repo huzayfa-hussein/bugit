@@ -12,6 +12,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * Dagger Hilt module for providing domain-related dependencies.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object DomainModule {

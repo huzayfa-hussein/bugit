@@ -8,6 +8,9 @@ import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Part
 
+/**
+ * Represents an API service for uploading images.
+ */
 interface ImageApiService {
 
     @Multipart

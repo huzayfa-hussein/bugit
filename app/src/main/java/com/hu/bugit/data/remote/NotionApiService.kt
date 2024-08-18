@@ -6,6 +6,9 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 
+/**
+ * Represents the Notion API service interface.
+ */
 interface NotionApiService {
 
     @POST("pages")
