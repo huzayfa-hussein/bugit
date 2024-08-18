@@ -15,6 +15,7 @@ BugIt Android is a bug-tracking application developed for Android using modern A
 
 1. **Upload Bug Images**: The app allows users to upload images of bugs to [Imgur](https://imgur.com/) via their API and retrieves the image URL.
 2. **Report Bugs in Notion**: The app creates new bug reports in a Notion database. The report includes a description, the date, and the uploaded image URL.
+3. **Local Bug Storage**: All reported bugs are also saved locally in a Room database and displayed on the home screen.
 
 ## Prerequisites
 
