@@ -10,6 +10,7 @@ BugIt Android is a bug-tracking application developed for Android using modern A
 - **Networking**: API communication using Retrofit and OkHttp.
 - **Local Data Storage**: Implemented with Room.
 - **Navigation**: Managed with Navigation Compose.
+- ** Clean architecture and MVI pattern.
 
 ## How It Works
 
